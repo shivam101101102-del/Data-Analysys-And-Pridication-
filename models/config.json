@@ -1,0 +1,13 @@
+{
+    "model_path": "models/lung_cancer_detector.h5",
+    "input_shape": [
+        224,
+        224,
+        3
+    ],
+    "threshold": 0.5,
+    "classes": [
+        "Normal",
+        "Cancer Detected"
+    ]
+}
