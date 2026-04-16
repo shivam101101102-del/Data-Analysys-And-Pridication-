@@ -153,14 +153,17 @@ def predict_image():
                 'texture_variance': round(std_intensity, 2)
             },
             'history': history[-5:],
-            'chart_data': {
                 'image_features': {
-                    'Density': round(mean_intensity, 2),
-                    'Variance': round(std_intensity, 2),
-                    'Risk': round(final_risk, 2)
+                    'Mean Intensity': round(mean_intensity, 2),
+                    'Std Intensity': round(std_intensity, 2),
+                    'Edge Density': round(edge_density * 100, 2),
+                    'Risk Score': round(final_risk, 2)
                 },
                 'normal_ranges': {
-                    'Density': 135, 'Variance': 45, 'Risk': 35
+                    'Mean Intensity': 135,
+                    'Std Intensity': 45,
+                    'Edge Density': 10,
+                    'Risk Score': 35
                 }
             }
         })
