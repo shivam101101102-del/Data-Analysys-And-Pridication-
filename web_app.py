@@ -385,12 +385,14 @@ if __name__ == '__main__':
         print("🎉 Application is running!")
         print("=" * 80)
         print("\n📍 Open your browser and go to:")
-        print("\n   👉 http://localhost:5000")
+        print("\n   👉 http://localhost:10000")
         print("\n" + "=" * 80)
         print("\nPress CTRL+C to stop the server")
         print("=" * 80 + "\n")
         
-        app.run(debug=True, host='0.0.0.0', port=5000)
+        # Use port from environment variable for Render
+        port = int(os.environ.get("PORT", 10000))
+        app.run(host='0.0.0.0', port=port)
     else:
         print("\n❌ Failed to load model!")
         print("⚠️  Please run: python RUN_COMPLETE_PROJECT.py first")
