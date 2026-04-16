@@ -1,9 +1,9 @@
 services:
   - type: web
-    name: lung-cancer-ai
+    name: data-analysys-and-pridication
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn web_app:app --bind 0.0.0.0:$PORT
+    startCommand: gunicorn web_app:app --bind 0.0.0.0:$PORT --timeout 120
     envVars:
       - key: PORT
         value: 10000
