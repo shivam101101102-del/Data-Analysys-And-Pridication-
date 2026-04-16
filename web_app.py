@@ -33,18 +33,27 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'dcm'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Load deep learning model
-dl_model = None
-try:
-    dl_model = keras.models.load_model('models/lung_cancer_detector.h5')
-    print("✅ Deep Learning model loaded successfully!")
-except:
-    print("⚠️  Deep Learning model not found. Using basic analysis.")
-
 # Global variables
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 model = None
+dl_model = None
 history = []
+
+import gc
+
+def get_dl_model():
+    """Lazy load deep learning model only when needed to save RAM"""
+    global dl_model
+    if dl_model is None:
+        try:
+            print("⏳ Loading deep learning model (this may take a moment)...")
+            dl_model = keras.models.load_model(os.path.join(BASE_DIR, 'models', 'lung_cancer_detector.h5'))
+            print("✅ Deep Learning model loaded successfully!")
+        except Exception as e:
+            print(f"⚠️  Deep Learning model error: {e}")
+            dl_model = "FAILED"
+        gc.collect()
+    return dl_model
 
 def load_model():
     """Load the trained model"""
@@ -131,16 +140,17 @@ def predict_image():
             img_array = np.array(img_resized)
             
             # Analyze with deep learning model
-            if dl_model is not None:
+            current_dl_model = get_dl_model()
+            if current_dl_model is not None and current_dl_model != "FAILED":
                 # Normalize image
                 img_normalized = img_array / 255.0
                 img_batch = np.expand_dims(img_normalized, axis=0)
                 
                 # Get prediction
-                cancer_probability = dl_model.predict(img_batch, verbose=0)[0][0]
+                cancer_probability = current_dl_model.predict(img_batch, verbose=0)[0][0]
                 
                 # Calculate risk score (0-100)
-                risk_score = cancer_probability * 100
+                risk_score = float(cancer_probability * 100)
                 
                 # Add some variation based on image features
                 gray = cv2.cvtColor(img_array, cv2.COLOR_RGB2GRAY)
@@ -221,7 +231,7 @@ def predict_image():
                     'mean_intensity': round(mean_intensity, 2),
                     'std_intensity': round(std_intensity, 2),
                     'edge_density': round(edge_density * 100, 2),
-                    'model_used': 'Deep Learning (ResNet50)' if dl_model else 'Basic Analysis'
+                    'model_used': 'Deep Learning (ResNet50)' if dl_model and dl_model != "FAILED" else 'Basic Analysis'
                 },
                 'history': history[-10:],
                 'chart_data': {
