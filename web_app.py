@@ -61,6 +61,7 @@ def load_ml_model():
     if model is None:
         try:
             import pickle
+            import sklearn # Required for unpickling sklearn models
             model_path = os.path.join(BASE_DIR, "Dataset", "trained_model.pkl")
             with open(model_path, 'rb') as f:
                 model = pickle.load(f)
@@ -189,6 +190,7 @@ def predict_image():
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
+        import sklearn # Ensure sklearn is available for model.predict
         if not load_ml_model():
             return jsonify({'success': False, 'error': 'Regression model failed to load'})
             

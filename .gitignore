@@ -5,9 +5,6 @@ __pycache__/
 venv/
 uploads/
 .vscode/
-*.pkl
-Dataset/train_test_data.pkl
-Dataset/trained_model.pkl
 animation.gif
 Animation.gif
 test.jpg
