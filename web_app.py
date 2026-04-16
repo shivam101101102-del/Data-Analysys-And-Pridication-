@@ -153,6 +153,7 @@ def predict_image():
                 'texture_variance': round(std_intensity, 2)
             },
             'history': history[-5:],
+            'chart_data': {
                 'image_features': {
                     'Mean Intensity': round(mean_intensity, 2),
                     'Std Intensity': round(std_intensity, 2),
